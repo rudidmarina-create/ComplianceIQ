@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-white text-surface-900 dark:bg-surface-950 dark:text-surface-100;
+  }
+}
+
+@layer components {
+  /* Gradient text for hero sections */
+  .gradient-text {
+    @apply bg-gradient-to-br from-brand-600 to-brand-400 bg-clip-text text-transparent dark:from-brand-400 dark:to-brand-300;
+  }
+}
+
+@layer utilities {
+  /* Additional utility classes can go here */
+}
