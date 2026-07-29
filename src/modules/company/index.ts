@@ -1,6 +1,5 @@
-/** Company profile module — placeholder for future implementation */
+/** Company profile module — onboarding wizard, profile management */
 
-export const companyModule = {
-  name: "company" as const,
-  description: "Company profile management and onboarding wizard",
-};
+export { createCompanyProfile, getCompanyProfile } from "./actions";
+export { companyProfileSchema } from "./actions";
+export type { CompanyProfileInput } from "./actions";

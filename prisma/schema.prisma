@@ -7,7 +7,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -30,7 +29,92 @@ model Company {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  owner   User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  profile CompanyProfile?
+  tasks   ComplianceTask[]
 
   @@map("companies")
+}
+
+model CompanyProfile {
+  id                 String   @id @default(cuid())
+  companyId          String   @unique @map("company_id")
+  industry           String
+  state              String
+  city               String?
+  employeeCount      Int      @map("employee_count")
+  hasRemoteWorkers   Boolean  @default(false) @map("has_remote_workers")
+  hasUnionEmployees  Boolean  @default(false) @map("has_union_employees")
+  isFederalContractor Boolean @default(false) @map("is_federal_contractor")
+  isNonprofit        Boolean  @default(false) @map("is_nonprofit")
+  locationCount      Int      @default(1) @map("location_count")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([state])
+  @@index([industry])
+  @@map("company_profiles")
+}
+
+model ComplianceRule {
+  id               String    @id @default(cuid())
+  name             String
+  category         String
+  jurisdiction     String
+  description      String
+  conditions       Json
+  tasks            Json
+  consequences     String?
+  officialReference String?  @map("official_reference")
+  effectiveDate    DateTime? @map("effective_date")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  tasks_rel ComplianceTask[]
+
+  @@index([jurisdiction])
+  @@index([category])
+  @@map("compliance_rules")
+}
+
+model ComplianceTask {
+  id          String    @id @default(cuid())
+  companyId   String    @map("company_id")
+  ruleId      String    @map("rule_id")
+  title       String
+  description String
+  category    String
+  priority    String    @default("medium") // low, medium, high, critical
+  status      String    @default("pending") // pending, in_progress, completed, not_applicable
+  dueDate     DateTime? @map("due_date")
+  completedAt DateTime? @map("completed_at")
+  checklist   Json      @default("[]")
+  notes       String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  company Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  rule    ComplianceRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+
+  @@index([companyId, status])
+  @@index([dueDate])
+  @@map("compliance_tasks")
+}
+
+model KnowledgeArticle {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  content     String
+  category    String
+  tags        Json     @default("[]")
+  isPublished Boolean  @default(false) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([category])
+  @@index([isPublished])
+  @@map("knowledge_articles")
 }
