@@ -2,6 +2,7 @@ import Link from "next/link";
 import { auth, signOut } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { APP_NAME } from "@/lib/constants";
+import GlobalSearch from "@/components/search/GlobalSearch";
 import { LogOut, LayoutDashboard, ClipboardList, BookOpen } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -48,6 +49,11 @@ export default async function DashboardLayout({
                 Knowledge
               </Link>
             </nav>
+          </div>
+
+          {/* Global search */}
+          <div className="flex flex-1 items-center justify-center px-3 sm:px-6">
+            <GlobalSearch />
           </div>
 
           <div className="flex items-center gap-3">
